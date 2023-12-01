@@ -1,0 +1,25 @@
+{
+  "name": "student_registartion",
+  "version": "1.0.0",
+  "description": "Simple system for registration student to courses",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Motaz-Rimawi/student_registartion.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Motaz-Rimawi/student_registartion/issues"
+  },
+  "homepage": "https://github.com/Motaz-Rimawi/student_registartion#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "node": "^21.2.0",
+    "nodemon": "^3.0.2"
+  }
+}
