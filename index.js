@@ -235,19 +235,41 @@ app.put("/api/students/:id", async (req, res) => {
 });
 
 // Delete a specific student based on ID
-app.delete("/api/students/:id", (req, res) => {
+app.delete("/api/students/:id", async (req, res) => {
   const id = req.params.id;
-  const student = Student.findOneAndDelete({ id: id }, { new: true })
-    .then((result) => {
-      if (result) {
-        res.send("student has been deleted");
+
+  try {
+    const student = await Student.findOneAndDelete({ id: id });
+
+    if (student) {
+      const enrollments = await Enrollments.find({ studentId: student.id });
+
+      if (enrollments.length) {
+        for (const record of enrollments) {
+          const course = await Course.findOne({ id: record.courseId });
+          if (course) {
+            const new_limit = parseInt(course.limit) + 1;
+            await Course.findOneAndUpdate(
+              { id: course.id },
+              { $set: { limit: String(new_limit) } },
+              { new: true }
+            );
+          }
+        }
+
+        await Enrollments.deleteMany({ studentId: student.id });
+        res.send("Student has been deleted");
       } else {
-        res.status(404).send("There is no such student !");
+        res
+          .status(404)
+          .send("This student hasn't enrolled in any courses yet.");
       }
-    })
-    .catch((err) => {
-      res.send(err);
-    });
+    } else {
+      res.status(404).send("There is no such student!");
+    }
+  } catch (err) {
+    res.send(err);
+  }
 });
 
 app.listen(3000, () => {
